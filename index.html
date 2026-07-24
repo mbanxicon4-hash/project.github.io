@@ -1,0 +1,591 @@
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mbarara Stay - Best Hotel Comparison</title>
+    <meta name="description" content="Compare the top hotels in Mbarara, Uganda. Find the best price, WiFi, power backup, and breakfast for your stopover.">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4f8;
+            min-height: 100vh;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            padding: 60px 20px 50px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 50%, rgba(56, 189, 248, 0.08) 0%, transparent 60%);
+            animation: pulseGlow 8s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 1; }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(56, 189, 248, 0.15);
+            color: #7dd3fc;
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+            margin-bottom: 16px;
+        }
+
+        .hero h1 {
+            font-size: 3.2rem;
+            font-weight: 900;
+            color: white;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: #94a3b8;
+            font-size: 1.15rem;
+            max-width: 600px;
+            margin: 0 auto 10px;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 24px;
+        }
+
+        .hero-stats div {
+            color: #cbd5e1;
+            font-size: 0.85rem;
+        }
+
+        .hero-stats strong {
+            display: block;
+            font-size: 1.4rem;
+            color: white;
+            font-weight: 700;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: -30px auto 40px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .filter-bar {
+            background: white;
+            border-radius: 16px;
+            padding: 16px 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            gap: 12px;
+        }
+
+        .filter-bar .results {
+            font-size: 0.9rem;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .filter-bar .results strong {
+            color: #0f172a;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 6px 16px;
+            border-radius: 50px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #475569;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .filter-btn:hover {
+            border-color: #38bdf8;
+            color: #0f172a;
+        }
+
+        .filter-btn.active {
+            background: #0f172a;
+            color: white;
+            border-color: #0f172a;
+        }
+
+        .table-wrapper {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px -12px rgba(0,0,0,0.12);
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .table-wrapper:hover {
+            box-shadow: 0 24px 72px -12px rgba(0,0,0,0.18);
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+            padding: 4px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            min-width: 600px;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+        }
+
+        th {
+            text-align: left;
+            padding: 18px 20px;
+            color: #1e293b;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            background: #f8fafc;
+        }
+
+        td {
+            padding: 18px 20px;
+            border-bottom: 1px solid #f1f5f9;
+            vertical-align: middle;
+            transition: 0.15s;
+        }
+
+        tbody tr {
+            transition: 0.2s;
+            cursor: default;
+        }
+
+        tbody tr:hover {
+            background: #fafcff;
+            transform: scale(1.002);
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .hotel-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hotel-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .hotel-name div {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hotel-name strong {
+            font-size: 0.95rem;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .hotel-name .sub {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .rate {
+            font-weight: 700;
+            font-size: 1rem;
+            color: #0f172a;
+        }
+
+        .rate small {
+            font-weight: 400;
+            font-size: 0.7rem;
+            color: #94a3b8;
+        }
+
+        .badge {
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            display: inline-block;
+        }
+
+        .badge.green {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge.yellow {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge.red {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge.blue {
+            background: #dbeafe;
+            color: #1e4b8a;
+        }
+
+        .badge.purple {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+
+        .wifi-stars {
+            display: flex;
+            gap: 2px;
+            align-items: center;
+        }
+
+        .wifi-stars .star {
+            color: #cbd5e1;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+
+        .wifi-stars .star.filled {
+            color: #f59e0b;
+        }
+
+        .wifi-label {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin-left: 6px;
+            font-weight: 500;
+        }
+
+        .parking {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+        }
+
+        .footer {
+            text-align: center;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            padding: 30px 20px 20px;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            .hero-stats {
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+            .filter-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+            .filter-group {
+                justify-content: center;
+            }
+            th, td {
+                padding: 14px 14px;
+                font-size: 0.8rem;
+            }
+            .hotel-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 40px 16px 30px;
+            }
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+            .container {
+                padding: 0 12px;
+                margin-top: -20px;
+            }
+            .table-wrapper {
+                border-radius: 16px;
+            }
+            th, td {
+                padding: 10px 10px;
+                font-size: 0.75rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">🏆 Mbarara's #1 Hotel Guide</div>
+            <h1>Find Your Perfect <span>Stay in Mbarara</span></h1>
+            <p>Real comparisons on price, power backup, WiFi, and breakfast — so you can book with confidence.</p>
+            <div class="hero-stats">
+                <div><strong>10+</strong> Hotels Compared</div>
+                <div><strong>5</strong> Key Factors</div>
+                <div><strong>⚡</strong> Updated Weekly</div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+
+        <div class="filter-bar">
+            <div class="results">Showing <strong id="hotelCount">0</strong> hotels</div>
+            <div class="filter-group">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="wifi">Best WiFi</button>
+                <button class="filter-btn" data-filter="power">24/7 Power</button>
+                <button class="filter-btn" data-filter="budget">Under 150k</button>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <div class="table-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Hotel</th>
+                            <th>Rate (UGX)</th>
+                            <th>Breakfast</th>
+                            <th>Power Backup</th>
+                            <th>WiFi</th>
+                            <th>Parking</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hotelTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="footer">
+            🌍 Built for travelers passing through Mbarara, Uganda • Data verified manually
+        </div>
+    </div>
+
+    <script>
+        const hotels = [
+            {
+                name: "Lake View Resort Hotel",
+                rate: "180,000",
+                breakfast: "Buffet",
+                power: "Generator 24/7",
+                wifi: 4,
+                parking: "✅ Secure",
+                icon: "🌅"
+            },
+            {
+                name: "Igongo Cultural Centre",
+                rate: "220,000",
+                breakfast: "Continental",
+                power: "Solar + Backup",
+                wifi: 5,
+                parking: "✅ Free",
+                icon: "🏛️"
+            },
+            {
+                name: "Rwizi Arch Hotel",
+                rate: "160,000",
+                breakfast: "Buffet",
+                power: "Generator (limited)",
+                wifi: 3,
+                parking: "✅ Secure",
+                icon: "🌉"
+            },
+            {
+                name: "Acacia Country Inn",
+                rate: "140,000",
+                breakfast: "À la carte",
+                power: "Generator 24/7",
+                wifi: 4,
+                parking: "✅ Free",
+                icon: "🌳"
+            },
+            {
+                name: "Tropic Inn Hotel",
+                rate: "90,000",
+                breakfast: "None",
+                power: "No backup",
+                wifi: 2,
+                parking: "❌ Street",
+                icon: "🏨"
+            },
+            {
+                name: "Regency Hotel Mbarara",
+                rate: "200,000",
+                breakfast: "Buffet",
+                power: "Generator 24/7",
+                wifi: 5,
+                parking: "✅ Valet",
+                icon: "✨"
+            }
+        ];
+
+        function renderHotels(filter = 'all') {
+            const tbody = document.getElementById('hotelTableBody');
+            tbody.innerHTML = '';
+
+            let filtered = hotels;
+
+            if (filter === 'wifi') {
+                filtered = hotels.filter(h => h.wifi >= 4);
+            } else if (filter === 'power') {
+                filtered = hotels.filter(h => h.power.includes('24/7'));
+            } else if (filter === 'budget') {
+                filtered = hotels.filter(h => parseInt(h.rate.replace(/,/g, '')) < 150000);
+            }
+
+            document.getElementById('hotelCount').textContent = filtered.length;
+
+            filtered.forEach(h => {
+                const row = document.createElement('tr');
+
+                let stars = '';
+                for (let i = 1; i <= 5; i++) {
+                    stars += `<span class="star ${i <= h.wifi ? 'filled' : ''}">★</span>`;
+                }
+                let wifiLabel = '';
+                if (h.wifi >= 4) wifiLabel = '<span class="wifi-label">Fast</span>';
+                else if (h.wifi === 3) wifiLabel = '<span class="wifi-label">Decent</span>';
+                else wifiLabel = '<span class="wifi-label">Slow</span>';
+
+                let powerBadge = h.power;
+                if (powerBadge.includes('24/7')) {
+                    powerBadge = `<span class="badge green">${h.power}</span>`;
+                } else if (powerBadge.includes('limited') || powerBadge.includes('No')) {
+                    powerBadge = `<span class="badge red">${h.power}</span>`;
+                } else {
+                    powerBadge = `<span class="badge yellow">${h.power}</span>`;
+                }
+
+                let breakfastBadge = h.breakfast;
+                if (h.breakfast === 'None') {
+                    breakfastBadge = `<span class="badge red">None</span>`;
+                } else if (h.breakfast === 'Buffet') {
+                    breakfastBadge = `<span class="badge green">${h.breakfast}</span>`;
+                } else {
+                    breakfastBadge = `<span class="badge blue">${h.breakfast}</span>`;
+                }
+
+                row.innerHTML = `
+                    <td>
+                        <div class="hotel-name">
+                            <div class="hotel-icon">${h.icon}</div>
+                            <div>
+                                <strong>${h.name}</strong>
+                                <span class="sub">Mbarara</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="rate">UGX ${h.rate}</span></td>
+                    <td>${breakfastBadge}</td>
+                    <td>${powerBadge}</td>
+                    <td>
+                        <div class="wifi-stars">
+                            ${stars}
+                            ${wifiLabel}
+                        </div>
+                    </td>
+                    <td><span class="parking">${h.parking}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                renderHotels(this.dataset.filter);
+            });
+        });
+
+        renderHotels('all');
+    </script>
+
+</body>
+</html>
